@@ -8,8 +8,13 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/grades")
 class GradeController(private val service: GradeService) {
 
-    @GetMapping
+    @GetMapping("/all")
     fun getAll(): List<Grade> {
         return service.findAll()
+    }
+
+    @GetMapping("/reproved")
+    fun getReproved(): List<Grade> {
+        return service.findReproved()
     }
 }
