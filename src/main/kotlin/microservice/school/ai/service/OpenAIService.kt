@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import org.springframework.http.*
 import io.github.cdimascio.dotenv.Dotenv
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 
 enum class Status {
     APROVADO,
@@ -76,6 +77,7 @@ class OpenAIService {
                     "content" to """
                 Você é um professor.
                 Gere um feedback curto sobre o desempenho do aluno.
+                Retorne apenas o texto.
                 """.trimIndent()
                 ),
                 mapOf(
@@ -89,6 +91,13 @@ class OpenAIService {
 
         val response = restTemplate.postForEntity(url, request, String::class.java)
 
-        return response.body ?: "{}"
+        val mapper = jacksonObjectMapper()
+
+        return try {
+            val json = mapper.readTree(response.body)
+            json["choices"][0]["message"]["content"].asText().trim()
+        } catch (e: Exception) {
+            ""
+        }
     }
 }
