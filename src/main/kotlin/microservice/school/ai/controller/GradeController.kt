@@ -17,4 +17,14 @@ class GradeController(private val service: GradeService) {
     fun getReproved(): List<Grade> {
         return service.findReproved()
     }
+
+    @GetMapping("/approved")
+    fun getApproved(): List<Grade> {
+        return service.findApproved()
+    }
+
+    @GetMapping("/{id}/feedback")
+    fun feedback(@PathVariable id: Long): String {
+        return service.generateStudentFeedback(id)
+    }
 }
